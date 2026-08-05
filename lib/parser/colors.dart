@@ -1,4 +1,4 @@
-import 'internal/raw_css_colors.dart';
+import 'package:flutter_quill_delta_from_html/parser/internal/raw_css_colors.dart';
 
 /// Validates and retrieves the color string in hexadecimal format.
 ///
@@ -82,11 +82,11 @@ String? colorToHex(String color) {
 /// print(rgbToHex('rgb(255, 0, 0)')); // Output: #ff0000
 /// ```
 String rgbToHex(String rgb) {
-  rgb = rgb.replaceAll('rgb(', '').replaceAll(')', '');
-  List<String> rgbValues = rgb.split(',');
-  int r = int.parse(rgbValues[0].trim());
-  int g = int.parse(rgbValues[1].trim());
-  int b = int.parse(rgbValues[2].trim());
+  final result = rgb.replaceAll('rgb(', '').replaceAll(')', '');
+  final rgbValues = result.split(',');
+  final r = int.parse(rgbValues[0].trim());
+  final g = int.parse(rgbValues[1].trim());
+  final b = int.parse(rgbValues[2].trim());
   return _toHex(r, g, b, 255);
 }
 
@@ -105,13 +105,13 @@ String rgbToHex(String rgb) {
 /// print(rgbaToHex('rgba(255, 0, 0, 0.5)')); // Output: #ff000080
 /// ```
 String rgbaToHex(String rgba) {
-  rgba = rgba.replaceAll('rgba(', '').replaceAll(')', '');
-  List<String> rgbaValues = rgba.split(',');
-  int r = int.parse(rgbaValues[0].trim());
-  int g = int.parse(rgbaValues[1].trim());
-  int b = int.parse(rgbaValues[2].trim());
-  double a = double.parse(rgbaValues[3].trim());
-  int alpha = (a * 255).round();
+  final result = rgba.replaceAll('rgba(', '').replaceAll(')', '');
+  final rgbaValues = result.split(',');
+  final r = int.parse(rgbaValues[0].trim());
+  final g = int.parse(rgbaValues[1].trim());
+  final b = int.parse(rgbaValues[2].trim());
+  final a = double.parse(rgbaValues[3].trim());
+  final alpha = (a * 255).round();
   return _toHex(r, g, b, alpha);
 }
 
@@ -130,12 +130,12 @@ String rgbaToHex(String rgba) {
 /// print(hslToHex('hsl(0, 100%, 50%)')); // Output: #ff0000
 /// ```
 String hslToHex(String hsl) {
-  hsl = hsl.replaceAll('hsl(', '').replaceAll(')', '');
-  List<String> hslValues = hsl.split(',');
-  double h = double.parse(hslValues[0].trim());
-  double s = double.parse(hslValues[1].replaceAll('%', '').trim()) / 100;
-  double l = double.parse(hslValues[2].replaceAll('%', '').trim()) / 100;
-  List<int> rgb = _hslToRgb(h, s, l);
+  final val = hsl.replaceAll('hsl(', '').replaceAll(')', '');
+  final hslValues = val.split(',');
+  final h = double.parse(hslValues[0].trim());
+  final s = double.parse(hslValues[1].replaceAll('%', '').trim()) / 100;
+  final l = double.parse(hslValues[2].replaceAll('%', '').trim()) / 100;
+  final rgb = _hslToRgb(h, s, l);
   return _toHex(rgb[0], rgb[1], rgb[2], 255);
 }
 
@@ -154,14 +154,14 @@ String hslToHex(String hsl) {
 /// print(hslaToHex('hsla(0, 100%, 50%, 0.5)')); // Output: #ff000080
 /// ```
 String hslaToHex(String hsla) {
-  hsla = hsla.replaceAll('hsla(', '').replaceAll(')', '');
-  List<String> hslaValues = hsla.split(',');
-  double h = double.parse(hslaValues[0].trim());
-  double s = double.parse(hslaValues[1].replaceAll('%', '').trim()) / 100;
-  double l = double.parse(hslaValues[2].replaceAll('%', '').trim()) / 100;
-  double a = double.parse(hslaValues[3].trim());
-  int alpha = (a * 255).round();
-  List<int> rgb = _hslToRgb(h, s, l);
+  final result = hsla.replaceAll('hsla(', '').replaceAll(')', '');
+  final hslaValues = result.split(',');
+  final h = double.parse(hslaValues[0].trim());
+  final s = double.parse(hslaValues[1].replaceAll('%', '').trim()) / 100;
+  final l = double.parse(hslaValues[2].replaceAll('%', '').trim()) / 100;
+  final a = double.parse(hslaValues[3].trim());
+  final alpha = (a * 255).round();
+  final rgb = _hslToRgb(h, s, l);
   return _toHex(rgb[0], rgb[1], rgb[2], alpha);
 }
 
@@ -182,10 +182,12 @@ String hslaToHex(String hsla) {
 /// print(_hslToRgb(0, 1.0, 0.5)); // Output: [255, 0, 0] (Equivalent to #ff0000)
 /// ```
 List<int> _hslToRgb(double h, double s, double l) {
-  double c = (1 - (2 * l - 1).abs()) * s;
-  double x = c * (1 - ((h / 60) % 2 - 1).abs());
-  double m = l - c / 2;
-  double r = 0, g = 0, b = 0;
+  final c = (1 - (2 * l - 1).abs()) * s;
+  final x = c * (1 - ((h / 60) % 2 - 1).abs());
+  final m = l - c / 2;
+  double r = 0;
+  double g = 0;
+  double b = 0;
 
   if (h >= 0 && h < 60) {
     r = c;
@@ -207,9 +209,9 @@ List<int> _hslToRgb(double h, double s, double l) {
     b = x;
   }
 
-  int red = ((r + m) * 255).round();
-  int green = ((g + m) * 255).round();
-  int blue = ((b + m) * 255).round();
+  final red = ((r + m) * 255).round();
+  final green = ((g + m) * 255).round();
+  final blue = ((b + m) * 255).round();
 
   return [red, green, blue];
 }
@@ -232,10 +234,10 @@ List<int> _hslToRgb(double h, double s, double l) {
 /// print(_toHex(255, 0, 0, 255)); // Output: #ff0000
 /// ```
 String _toHex(int r, int g, int b, int a) {
-  String hexR = r.toRadixString(16).padLeft(2, '0');
-  String hexG = g.toRadixString(16).padLeft(2, '0');
-  String hexB = b.toRadixString(16).padLeft(2, '0');
-  String hexA = a.toRadixString(16).padLeft(2, '0');
+  final hexR = r.toRadixString(16).padLeft(2, '0');
+  final hexG = g.toRadixString(16).padLeft(2, '0');
+  final hexB = b.toRadixString(16).padLeft(2, '0');
+  final hexA = a.toRadixString(16).padLeft(2, '0');
   return '#$hexA$hexR$hexG$hexB'.toUpperCase();
 }
 
@@ -256,7 +258,7 @@ String _toHex(int r, int g, int b, int a) {
 /// ```
 String colorNameToHex(String colorName) {
   // Normalize the color name to lowercase
-  String normalizedColorName = colorName.toLowerCase();
+  final normalizedColorName = colorName.toLowerCase();
 
   // Check if the color name exists in the map
   if (colorNameToHexMap.containsKey(normalizedColorName)) {

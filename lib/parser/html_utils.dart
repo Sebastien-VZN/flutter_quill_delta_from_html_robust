@@ -1,9 +1,8 @@
+import 'package:flutter_quill_delta_from_html/parser/colors.dart';
+import 'package:flutter_quill_delta_from_html/parser/font_size_parser.dart';
 import 'package:flutter_quill_delta_from_html/parser/indent_parser.dart';
+import 'package:flutter_quill_delta_from_html/parser/line_height_parser.dart';
 import 'package:flutter_quill_delta_from_html/parser/typedef/typedefs.dart';
-
-import 'colors.dart';
-import 'font_size_parser.dart';
-import 'line_height_parser.dart';
 
 /// Checks if the given [tag] corresponds to an inline HTML element.
 ///
@@ -40,13 +39,13 @@ Map<String, dynamic> parseStyleAttribute(
   String style, {
   CSSVarible? onDetectLineheightCssVariable,
 }) {
-  Map<String, dynamic> attributes = {};
+  final attributes = <String, dynamic>{};
   if (style.isEmpty) return attributes;
 
   final styles = style.split(';');
   double? fontSize;
 
-  for (var style in styles) {
+  for (final style in styles) {
     final parts = style.split(':');
     if (parts.length == 2) {
       final key = parts[0].trim();
@@ -55,25 +54,21 @@ Map<String, dynamic> parseStyleAttribute(
       switch (key) {
         case 'text-align':
           attributes['align'] = value;
-          break;
         case 'color':
           final color = validateAndGetColor(value);
           if (color != null) {
             attributes['color'] = color;
           }
-          break;
         case 'background-color':
           final color = validateAndGetColor(value);
           if (color != null) {
             attributes['background'] = color;
           }
-          break;
         case 'padding-left' || 'padding-right':
           final indentation = parseToIndent(value);
           if (indentation != 0) {
             attributes['indent'] = indentation;
           }
-          break;
         case 'font-size':
           String? sizeToPass;
 
@@ -103,10 +98,8 @@ Map<String, dynamic> parseStyleAttribute(
             }
           }
           attributes['size'] = sizeToPass;
-          break;
         case 'font-family':
           attributes['font'] = value;
-          break;
         case 'line-height':
           double? lineHeight;
           if (onDetectLineheightCssVariable != null) {
@@ -124,12 +117,10 @@ Map<String, dynamic> parseStyleAttribute(
           if (lineHeight != null) {
             attributes['line-height'] = lineHeight;
           }
-          break;
         case 'font-style':
           if (value.contains('italic')) {
             attributes['italic'] = true;
           }
-          break;
         case 'text-decoration':
           if (value.contains('underline')) {
             attributes['underline'] = true;
@@ -137,7 +128,6 @@ Map<String, dynamic> parseStyleAttribute(
           if (value.contains('line-through')) {
             attributes['strike'] = true;
           }
-          break;
         case 'font-weight':
           if (value == 'bold') {
             attributes['bold'] = true;
@@ -158,7 +148,6 @@ Map<String, dynamic> parseStyleAttribute(
           } else {
             attributes['list'] = 'unchecked';
           }
-          break;
         default:
           break;
       }
@@ -185,10 +174,10 @@ Map<String, dynamic> parseStyleAttribute(
 /// print(parseStyleAttribute(style)); // Output: {'width': '50px', 'height': '250px'}
 /// ```
 Map<String, dynamic> parseImageStyleAttribute(String style, String align) {
-  Map<String, dynamic> attributes = {};
+  final attributes = <String, dynamic>{};
 
   final styles = style.split(';');
-  for (var style in styles) {
+  for (final style in styles) {
     final parts = style.split(':');
     if (parts.length == 2) {
       final key = parts[0].trim();
@@ -197,13 +186,10 @@ Map<String, dynamic> parseImageStyleAttribute(String style, String align) {
       switch (key) {
         case 'width':
           attributes['width'] = value;
-          break;
         case 'height':
           attributes['height'] = value;
-          break;
         case 'margin':
           attributes['margin'] = value;
-          break;
         default:
           // Ignore other styles
           break;

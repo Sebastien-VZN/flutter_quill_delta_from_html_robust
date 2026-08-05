@@ -36,8 +36,8 @@ const double picasSizeMultiplier = 16;
 /// ```
 ///
 /// [value] is the CSS value to be converted, e.g., '2cm', '10mm', etc.
-/// [fontSize] is the font-size of the current element, used for `em` units.
-/// [rootFontSize] is the font-size of the root element, used for `rem` units.
+/// fontSize is the font-size of the current element, used for `em` units.
+/// rootFontSize is the font-size of the root element, used for `rem` units.
 ///
 /// Returns the equivalent value in pixels.
 double parseSizeToPx(
@@ -46,11 +46,11 @@ double parseSizeToPx(
   double rootFontSizeRemMultiplier = 16.0,
 }) {
   // Extract the unit from the value string.
-  final unit = value.replaceAll(RegExp(r'[0-9.]'), '');
+  final unit = value.replaceAll(RegExp('[0-9.]'), '');
 
   // Extract the numeric part of the value string.
   final number =
-      double.tryParse(value.replaceAll(RegExp(r'[a-z%]'), '')) ?? 0.0;
+      double.tryParse(value.replaceAll(RegExp('[a-z%]'), '')) ?? 0.0;
 
   // Convert the numeric value to pixels based on the unit.
   switch (unit) {

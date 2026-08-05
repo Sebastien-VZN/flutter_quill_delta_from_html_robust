@@ -1,10 +1,9 @@
 import 'package:dart_quill_delta/dart_quill_delta.dart';
+import 'package:flutter_quill_delta_from_html/parser/custom_html_part.dart';
 import 'package:flutter_quill_delta_from_html/parser/extensions/node_ext.dart';
 import 'package:flutter_quill_delta_from_html/parser/html_utils.dart';
 import 'package:flutter_quill_delta_from_html/parser/node_processor.dart';
 import 'package:html/dom.dart' as dom;
-
-import 'custom_html_part.dart';
 
 /// Operations for converting supported HTML elements to Delta operations.
 ///
@@ -27,7 +26,7 @@ abstract class HtmlOperations {
     int indentLevel = 0,
     bool transformTableAsEmbed = false,
   ]) {
-    List<Operation> ops = [];
+    final ops = <Operation>[];
     if (element.localName == null) {
       return ops..add(Operation.insert(element.text));
     }
@@ -37,8 +36,8 @@ abstract class HtmlOperations {
     // a <strong> or a <em>, or even a <span> then we first need to verify
     // if a inline an store into it to parse the attributes as we need
     if (isInline(element.localName!)) {
-      final Delta delta = Delta();
-      final Map<String, dynamic> attributes = {};
+      final delta = Delta();
+      final attributes = <String, dynamic>{};
       if (element.isStrong) attributes['bold'] = true;
       if (element.isItalic) attributes['italic'] = true;
       if (element.isUnderline) attributes['underline'] = true;
@@ -76,7 +75,7 @@ abstract class HtmlOperations {
       ops.addAll(tableToOp(
         element,
         transformTableAsEmbed,
-      ));
+      ),);
     }
     return ops;
   }
@@ -116,7 +115,7 @@ abstract class HtmlOperations {
 
   /// Converts a table HTML element (`<table>`) to Delta operations.
   List<Operation> tableToOp(dom.Element element,
-      [bool transformTableAsEmbed = false]);
+      [bool transformTableAsEmbed = false,]);
 
   /// Sets custom HTML parts to extend the conversion capabilities.
   ///
@@ -124,7 +123,7 @@ abstract class HtmlOperations {
   /// - [customBlocks]: List of custom HTML parts to add.
   /// - [overrideCurrentBlocks]: Flag to override existing custom blocks.
   void setCustomBlocks(List<CustomHtmlPart> customBlocks,
-      {bool overrideCurrentBlocks = false}) {
+      {bool overrideCurrentBlocks = false,}) {
     if (this.customBlocks != null && !overrideCurrentBlocks) {
       this.customBlocks!.addAll(customBlocks);
       return;

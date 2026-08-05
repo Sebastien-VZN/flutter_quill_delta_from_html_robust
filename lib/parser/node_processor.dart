@@ -31,9 +31,9 @@ void processNode(
   CSSVarible? onDetectLineheightCssVariable,
 }) {
   if (node is dom.Text) {
-    delta.insert(node.text, attributes.isEmpty ? null : attributes);
+    delta.insert(node.text, attributes: attributes.isEmpty ? null : attributes);
   } else if (node is dom.Element) {
-    Map<String, dynamic> newAttributes = Map.from(attributes);
+    var newAttributes = Map<String, dynamic>.from(attributes);
 
     // Apply inline styles based on tag type
     if (node.isStrong) newAttributes['bold'] = true;
@@ -45,13 +45,12 @@ void processNode(
 
     // Use custom block definitions if provided
     if (customBlocks != null && customBlocks.isNotEmpty) {
-      for (var customBlock in customBlocks) {
+      for (final customBlock in customBlocks) {
         if (customBlock.matches(node)) {
-          final operations =
-              customBlock.convert(node, currentAttributes: newAttributes);
-          operations.forEach((Operation op) {
-            delta.insert(op.data, op.attributes);
-          });
+          final operations = customBlock.convert(node, currentAttributes: newAttributes);
+          for (final op in operations) {
+            delta.insert(op.data, attributes: op.attributes);
+          }
           continue;
         }
       }
@@ -64,14 +63,12 @@ void processNode(
           onDetectLineheightCssVariable: onDetectLineheightCssVariable,
         );
         if (addSpanAttrs) {
-          newAttributes.remove('align');
-          newAttributes.remove('direction');
-          newAttributes.remove('indent');
-          if (removeTheseAttributesFromSpan != null &&
-              removeTheseAttributesFromSpan.isNotEmpty) {
-            for (final attr in removeTheseAttributesFromSpan) {
-              newAttributes.remove(attr);
-            }
+          newAttributes
+            ..remove('align')
+            ..remove('direction')
+            ..remove('indent');
+          if (removeTheseAttributesFromSpan != null && removeTheseAttributesFromSpan.isNotEmpty) {
+            removeTheseAttributesFromSpan.forEach(newAttributes.remove);
           }
           newAttributes = {...spanAttributes, ...newAttributes};
         }
@@ -79,20 +76,17 @@ void processNode(
 
       // Handle <img> tags
       if (node.isImg) {
-        final String src = node.attributes['src'] ?? '';
-        final String styles = node.attributes['style'] ?? '';
-        final String align = node.attributes['align'] ?? '';
+        final src = node.attributes['src'] ?? '';
+        final styles = node.attributes['style'] ?? '';
+        final align = node.attributes['align'] ?? '';
         final attributes = parseImageStyleAttribute(styles, align);
         if (src.isNotEmpty) {
           delta.insert(
             {'image': src},
-            styles.isEmpty
+            attributes: styles.isEmpty
                 ? null
                 : {
-                    'style': attributes.entries
-                        .map((entry) => '${entry.key}:${entry.value}')
-                        .toList()
-                        .join(';'),
+                    'style': attributes.entries.map((entry) => '${entry.key}:${entry.value}').toList().join(';'),
                   },
           );
         }
@@ -100,20 +94,16 @@ void processNode(
 
       // Handle <video> tags
       if (node.isVideo) {
-        final String? src = node.getAttribute('src');
-        final String? sourceSrc = node.nodes
-            .where((node) => node.nodeType == dom.Node.ELEMENT_NODE)
-            .firstOrNull
-            ?.attributes['src'];
-        if (src != null && src.isNotEmpty ||
-            sourceSrc != null && sourceSrc.isNotEmpty) {
+        final src = node.getAttribute('src');
+        final sourceSrc = node.nodes.where((node) => node.nodeType == dom.Node.ELEMENT_NODE).firstOrNull?.attributes['src'];
+        if (src != null && src.isNotEmpty || sourceSrc != null && sourceSrc.isNotEmpty) {
           delta.insert({'video': src ?? sourceSrc});
         }
       }
 
       // Handle <a> tags (links)
       if (node.isLink) {
-        final String? src = node.attributes['href'];
+        final src = node.attributes['href'];
         if (src != null) {
           newAttributes.remove('indent');
           newAttributes['link'] = src;
@@ -122,9 +112,9 @@ void processNode(
 
       // Handle <br> tags (line breaks)
       if (node.isBreakLine) {
-        newAttributes.remove('align');
-        newAttributes.remove('direction');
-        newAttributes.remove('indent');
+        newAttributes..remove('align')
+        ..remove('direction')
+        ..remove('indent');
         delta.insert('\n');
       }
     }

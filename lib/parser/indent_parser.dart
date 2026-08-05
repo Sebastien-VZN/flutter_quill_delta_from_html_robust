@@ -15,36 +15,30 @@
 /// Returns the corresponding indentation level as an integer.
 int parseToIndent(String value) {
   // Extract numeric part from the value and parse it to double
-  double indentValue =
+  var indentValue =
       double.tryParse(value.replaceAll(RegExp(r'[^\d.]'), '')) ?? 0;
 
   // Extract the unit part from the value
-  String unit = value.replaceAll(RegExp(r'[\d.]'), '').trim();
+  final unit = value.replaceAll(RegExp(r'[\d.]'), '').trim();
 
   // Convert the value to an indentation level based on the unit
   switch (unit) {
     case 'px':
       indentValue /= 16; // Assume 16px = 1 indent level
-      break;
     case 'pt':
       indentValue /= 12; // Assume 12pt = 1 indent level
-      break;
     case 'pc':
       indentValue *= 1; // 1pc = 1 indent level
-      break;
     case 'em':
     case 'rem':
       indentValue *= 1; // 1em or 1rem = 1 indent level
-      break;
     case '%':
       indentValue /= 100; // Assume 100% = 1 indent level
-      break;
     default:
       indentValue = 0; // If unit is not recognized, set indent level to 0
-      break;
   }
   // Round to the nearest whole number for the indent level
-  int indentLevel = indentValue.round();
+  final indentLevel = indentValue.round();
   return indentLevel < 1
       ? 0
       : indentLevel > 5

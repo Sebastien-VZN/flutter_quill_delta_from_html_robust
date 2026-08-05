@@ -2,9 +2,9 @@ import 'package:dart_quill_delta/dart_quill_delta.dart';
 import 'package:flutter_quill_delta_from_html/parser/extensions/node_ext.dart';
 import 'package:flutter_quill_delta_from_html/parser/html_to_operation.dart';
 import 'package:flutter_quill_delta_from_html/parser/html_utils.dart';
+import 'package:flutter_quill_delta_from_html/parser/node_processor.dart';
 import 'package:flutter_quill_delta_from_html/parser/typedef/typedefs.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:flutter_quill_delta_from_html/parser/node_processor.dart';
 
 /// Default implementation of `HtmlOperations` for converting common HTML to Delta operations.
 ///
@@ -12,25 +12,22 @@ import 'package:flutter_quill_delta_from_html/parser/node_processor.dart';
 /// like paragraphs, headers, lists, links, images, videos, code blocks, and blockquotes
 /// into Delta operations.
 class DefaultHtmlToOperations extends HtmlOperations {
-  final CSSVarible? onDetectLineheightCssVariable;
-
   DefaultHtmlToOperations(
     this.onDetectLineheightCssVariable,
   );
+  final CSSVarible? onDetectLineheightCssVariable;
 
   @override
   List<Operation> paragraphToOp(dom.Element element) {
-    final Delta delta = Delta();
+    final delta = Delta();
     final attributes = element.attributes;
-    Map<String, dynamic> inlineAttributes = {};
-    Map<String, dynamic> blockAttributes = {};
+    final inlineAttributes = <String, dynamic>{};
+    final blockAttributes = <String, dynamic>{};
     // Process the style attribute
-    if (attributes.containsKey('style') ||
-        attributes.containsKey('align') ||
-        attributes.containsKey('dir')) {
-      final String style = attributes['style'] ?? '';
-      final String? styles2 = attributes['align'];
-      final String? styles3 = attributes['dir'];
+    if (attributes.containsKey('style') || attributes.containsKey('align') || attributes.containsKey('dir')) {
+      final style = attributes['style'] ?? '';
+      final styles2 = attributes['align'];
+      final styles3 = attributes['dir'];
       final styleAttributes = parseStyleAttribute(
         element.localName!,
         style,
@@ -47,15 +44,14 @@ class DefaultHtmlToOperations extends HtmlOperations {
         onDetectLineheightCssVariable: onDetectLineheightCssVariable,
       );
       styleAttributes.addAll({...alignAttribute, ...dirAttribute});
-      if (styleAttributes.containsKey('align') ||
-          styleAttributes.containsKey('direction') ||
-          styleAttributes.containsKey('indent')) {
+      if (styleAttributes.containsKey('align') || styleAttributes.containsKey('direction') || styleAttributes.containsKey('indent')) {
         blockAttributes['align'] = styleAttributes['align'];
         blockAttributes['direction'] = styleAttributes['direction'];
         blockAttributes['indent'] = styleAttributes['indent'];
-        styleAttributes.remove('align');
-        styleAttributes.remove('direction');
-        styleAttributes.remove('indent');
+        styleAttributes
+          ..remove('align')
+          ..remove('direction')
+          ..remove('indent');
       }
       inlineAttributes.addAll(styleAttributes);
     }
@@ -74,7 +70,7 @@ class DefaultHtmlToOperations extends HtmlOperations {
     }
     if (blockAttributes.isNotEmpty) {
       blockAttributes.removeWhere((key, value) => value == null);
-      delta.insert('\n', blockAttributes);
+      delta.insert('\n', attributes: blockAttributes);
     }
 
     return delta.toList();
@@ -82,12 +78,12 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> spanToOp(dom.Element element) {
-    final Delta delta = Delta();
+    final delta = Delta();
     final attributes = element.attributes;
-    Map<String, dynamic> inlineAttributes = {};
+    final inlineAttributes = <String, dynamic>{};
     // Process the style attribute
     if (attributes.containsKey('style')) {
-      final String? style = attributes['style'];
+      final style = attributes['style'];
       final styleAttributes = parseStyleAttribute(
         element.localName!,
         style ?? '',
@@ -106,7 +102,6 @@ class DefaultHtmlToOperations extends HtmlOperations {
         node,
         inlineAttributes,
         delta,
-        addSpanAttrs: false,
         customBlocks: customBlocks,
         onDetectLineheightCssVariable: onDetectLineheightCssVariable,
       );
@@ -117,8 +112,8 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> linkToOp(dom.Element element) {
-    final Delta delta = Delta();
-    Map<String, dynamic> attributes = {};
+    final delta = Delta();
+    final attributes = <String, dynamic>{};
 
     if (element.attributes.containsKey('href')) {
       attributes['link'] = element.attributes['href'];
@@ -139,16 +134,14 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> headerToOp(dom.Element element) {
-    final Delta delta = Delta();
-    Map<String, dynamic> attributes = {};
-    Map<String, dynamic> blockAttributes = {};
+    final delta = Delta();
+    final attributes = <String, dynamic>{};
+    final blockAttributes = <String, dynamic>{};
 
-    if (element.attributes.containsKey('style') ||
-        element.attributes.containsKey('align') ||
-        element.attributes.containsKey('dir')) {
-      final String style = element.getSafeAttribute('style');
-      final String styles2 = element.getSafeAttribute('align');
-      final String styles3 = element.getSafeAttribute('dir');
+    if (element.attributes.containsKey('style') || element.attributes.containsKey('align') || element.attributes.containsKey('dir')) {
+      final style = element.getSafeAttribute('style');
+      final styles2 = element.getSafeAttribute('align');
+      final styles3 = element.getSafeAttribute('dir');
       final styleAttributes = parseStyleAttribute(
         element.localName!,
         style,
@@ -165,15 +158,14 @@ class DefaultHtmlToOperations extends HtmlOperations {
         onDetectLineheightCssVariable: onDetectLineheightCssVariable,
       );
       styleAttributes.addAll({...alignAttribute, ...dirAttribute});
-      if (styleAttributes.containsKey('align') ||
-          styleAttributes.containsKey('direction') ||
-          styleAttributes.containsKey('indent')) {
+      if (styleAttributes.containsKey('align') || styleAttributes.containsKey('direction') || styleAttributes.containsKey('indent')) {
         blockAttributes['align'] = styleAttributes['align'];
         blockAttributes['direction'] = styleAttributes['direction'];
         blockAttributes['indent'] = styleAttributes['indent'];
-        styleAttributes.remove('align');
-        styleAttributes.remove('direction');
-        styleAttributes.remove('indent');
+        styleAttributes
+          ..remove('align')
+          ..remove('direction')
+          ..remove('indent');
       }
       attributes.addAll(styleAttributes);
     }
@@ -195,18 +187,18 @@ class DefaultHtmlToOperations extends HtmlOperations {
     // Ensure a newline is added at the end of the header with the correct attributes
     if (blockAttributes.isNotEmpty) {
       blockAttributes.removeWhere((key, value) => value == null);
-      delta.insert('\n', blockAttributes);
+      delta.insert('\n', attributes: blockAttributes);
     }
     return delta.toList();
   }
 
   @override
   List<Operation> divToOp(dom.Element element) {
-    final Delta delta = Delta();
-    Map<String, dynamic> attributes = {};
+    final delta = Delta();
+    final attributes = <String, dynamic>{};
 
     if (element.attributes.containsKey('style')) {
-      final String style = element.attributes['style']!;
+      final style = element.attributes['style']!;
       final styleAttributes = parseStyleAttribute(
         element.localName!,
         style,
@@ -220,7 +212,7 @@ class DefaultHtmlToOperations extends HtmlOperations {
       } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
         final ops = resolveCurrentElement(node as dom.Element);
         for (final op in ops) {
-          delta.insert(op.data, op.attributes);
+          delta.insert(op.data, attributes: op.attributes);
         }
         if (node.isParagraph) {
           delta.insert('\n');
@@ -233,31 +225,30 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> listToOp(dom.Element element, [int indentLevel = 0]) {
-    final Delta delta = Delta();
+    final delta = Delta();
     final tagName = element.localName ?? 'ul';
-    final Map<String, dynamic> attributes = {};
-    final List<dom.Element> items =
-        element.children.where((child) => child.localName == 'li').toList();
+    final attributes = <String, dynamic>{};
+    final items = element.children.where((child) => child.localName == 'li').toList();
 
     if (tagName == 'ul') {
       attributes['list'] = 'bullet';
     } else if (tagName == 'ol') {
       attributes['list'] = 'ordered';
     }
-    var checkbox = element.querySelector('input[type="checkbox"]');
+    final checkbox = element.querySelector('input[type="checkbox"]');
     if (checkbox != null) {
       // If a checkbox is found, determine if it's checked
-      bool isChecked = checkbox.attributes.containsKey('checked');
+      final isChecked = checkbox.attributes.containsKey('checked');
       if (isChecked) {
         attributes['list'] = 'checked';
       } else {
         attributes['list'] = 'unchecked';
       }
     }
-    bool ignoreBlockAttributesInsertion = false;
+    var ignoreBlockAttributesInsertion = false;
     for (final item in items) {
       ignoreBlockAttributesInsertion = false;
-      int indent = indentLevel;
+      var indent = indentLevel;
       if (checkbox == null) {
         final dataChecked = item.getSafeAttribute('data-checked');
         final blockAttrs = parseStyleAttribute(
@@ -265,37 +256,39 @@ class DefaultHtmlToOperations extends HtmlOperations {
           dataChecked,
           onDetectLineheightCssVariable: onDetectLineheightCssVariable,
         );
-        var isCheckList = item.localName == 'li' &&
-            blockAttrs.isNotEmpty &&
-            blockAttrs.containsKey('list');
+        final isCheckList = item.localName == 'li' && blockAttrs.isNotEmpty && blockAttrs.containsKey('list');
         if (isCheckList) {
           attributes['list'] = blockAttrs['list'];
         }
       }
       // force always the max level indentation to be five
-      if (indentLevel > 5) indentLevel = 5;
-      if (indentLevel > 0) attributes['indent'] = indentLevel;
+
+      var result = indentLevel;
+      if (indentLevel > 5) {
+        result = 5;
+      }
+      if (indentLevel > 0) attributes['indent'] = result;
       for (final node in item.nodes) {
         if (node.nodeType == dom.Node.TEXT_NODE) {
           delta.insert(node.text);
         } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
           final element = node as dom.Element;
-          List<Operation> ops = [];
+          final ops = <Operation>[];
           // if found, a element list, into another list, then this is a nested and must insert first the block attributes
           // to separate the current element from the nested list elements
           if (element.isList) {
             indent++;
             ignoreBlockAttributesInsertion = true;
-            delta.insert('\n', attributes);
+            delta.insert('\n', attributes: attributes);
           }
           ops.addAll(resolveCurrentElement(element, indent));
           for (final op in ops) {
-            delta.insert(op.data, op.attributes);
+            delta.insert(op.data, attributes: op.attributes);
           }
         }
       }
       if (!ignoreBlockAttributesInsertion) {
-        delta.insert('\n', attributes);
+        delta.insert('\n', attributes: attributes);
       }
     }
 
@@ -304,8 +297,8 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> imgToOp(dom.Element element) {
-    final String src = element.getSafeAttribute('src');
-    final String styles = element.getSafeAttribute('style');
+    final src = element.getSafeAttribute('src');
+    final styles = element.getSafeAttribute('style');
     final attributes = parseImageStyleAttribute(
       styles,
       element.getSafeAttribute('align'),
@@ -317,12 +310,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
           styles.isEmpty
               ? null
               : {
-                  'style': attributes.entries
-                      .map((entry) => '${entry.key}:${entry.value}')
-                      .toList()
-                      .join(';'),
+                  'style': attributes.entries.map((entry) => '${entry.key}:${entry.value}').toList().join(';'),
                 },
-        )
+        ),
       ];
     }
     return [];
@@ -330,15 +320,11 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> videoToOp(dom.Element element) {
-    final String? src = element.getAttribute('src');
-    final String? sourceSrc = element.nodes
-        .where((node) => node.nodeType == dom.Node.ELEMENT_NODE)
-        .firstOrNull
-        ?.attributes['src'];
-    if (src != null && src.isNotEmpty ||
-        sourceSrc != null && sourceSrc.isNotEmpty) {
+    final src = element.getAttribute('src');
+    final sourceSrc = element.nodes.where((node) => node.nodeType == dom.Node.ELEMENT_NODE).firstOrNull?.attributes['src'];
+    if (src != null && src.isNotEmpty || sourceSrc != null && sourceSrc.isNotEmpty) {
       return [
-        Operation.insert({'video': src ?? sourceSrc})
+        Operation.insert({'video': src ?? sourceSrc}),
       ];
     }
     return [];
@@ -346,8 +332,8 @@ class DefaultHtmlToOperations extends HtmlOperations {
 
   @override
   List<Operation> blockquoteToOp(dom.Element element) {
-    final Delta delta = Delta();
-    Map<String, dynamic> blockAttributes = {'blockquote': true};
+    final delta = Delta();
+    final blockAttributes = <String, dynamic>{'blockquote': true};
 
     for (final node in element.nodes) {
       processNode(
@@ -358,15 +344,15 @@ class DefaultHtmlToOperations extends HtmlOperations {
       );
     }
 
-    delta.insert('\n', blockAttributes);
+    delta.insert('\n', attributes: blockAttributes);
 
     return delta.toList();
   }
 
   @override
   List<Operation> codeblockToOp(dom.Element element) {
-    final Delta delta = Delta();
-    Map<String, dynamic> blockAttributes = {'code-block': true};
+    final delta = Delta();
+    final blockAttributes = <String, dynamic>{'code-block': true};
 
     for (final node in element.nodes) {
       processNode(
@@ -377,7 +363,7 @@ class DefaultHtmlToOperations extends HtmlOperations {
       );
     }
 
-    delta.insert('\n', blockAttributes);
+    delta.insert('\n', attributes: blockAttributes);
 
     return delta.toList();
   }
@@ -392,23 +378,20 @@ class DefaultHtmlToOperations extends HtmlOperations {
     dom.Element element, [
     bool transformTableAsEmbed = false,
   ]) {
-    final Map<String, dynamic> table = <String, dynamic>{
+    final table = <String, dynamic>{
       'headers': <String, dynamic>{},
       'rows': <String, dynamic>{},
     };
-    final dom.Element? tBody = element.children.firstOrNull;
+    final tBody = element.children.firstOrNull;
     if (transformTableAsEmbed) {
-      int rowIndex = 0;
-      for (final dom.Node node in (tBody ?? element).nodes) {
-        final List<Operation> ops = <Operation>[];
-        final bool isHeaderRow = node is dom.Element &&
-            node.localName == 'tr' &&
-            node.children.isNotEmpty &&
-            node.children.firstOrNull?.localName == 'th';
+      var rowIndex = 0;
+      for (final node in (tBody ?? element).nodes) {
+        final ops = <Operation>[];
+        final isHeaderRow = node is dom.Element && node.localName == 'tr' && node.children.isNotEmpty && node.children.firstOrNull?.localName == 'th';
         if (isHeaderRow) {
-          int index = 0;
-          final Map<String, dynamic> header = <String, dynamic>{};
-          for (final dom.Element hNode in node.children) {
+          var index = 0;
+          final header = <String, dynamic>{};
+          for (final hNode in node.children) {
             if (hNode.text.isNotEmpty) {
               header['$index'] = hNode.text;
               index++;
@@ -422,37 +405,41 @@ class DefaultHtmlToOperations extends HtmlOperations {
           continue;
         }
         if (node is! dom.Element && node.text != null) {
-          ops.add(Operation.insert(node.text!));
+          ops.add(Operation.insert(node.text));
           table['rows']['$rowIndex'] = <String>[
-            ...ops.map<String>((
-              Operation e,
-            ) =>
-                e.data!.toString()),
+            ...ops.map<String>(
+              (
+                e,
+              ) =>
+                  e.data!.toString(),
+            ),
           ];
           rowIndex++;
         } else {
-          final dom.Element nodeEl = node as dom.Element;
+          final nodeEl = node as dom.Element;
           if (nodeEl.localName == 'tr') {
-            for (final dom.Element cellNodes in nodeEl.children) {
-              final List<Operation> cellOps = cellNodes.localName == 'td'
-                  ? paragraphToOp(cellNodes)
-                  : divToOp(cellNodes);
+            for (final cellNodes in nodeEl.children) {
+              final cellOps = cellNodes.localName == 'td' ? paragraphToOp(cellNodes) : divToOp(cellNodes);
               if (table['rows']['$rowIndex'] != null) {
                 table['rows']['$rowIndex'].addAll(
                   cellOps
-                      .map<String>((
-                        Operation e,
-                      ) =>
-                          e.data!.toString())
+                      .map<String>(
+                        (
+                          e,
+                        ) =>
+                            e.data!.toString(),
+                      )
                       .toList(),
                 );
                 continue;
               }
               table['rows']['$rowIndex'] = <String>[
-                ...cellOps.map<String>((
-                  Operation e,
-                ) =>
-                    e.data!.toString()),
+                ...cellOps.map<String>(
+                  (
+                    e,
+                  ) =>
+                      e.data!.toString(),
+                ),
               ];
             }
             rowIndex++;
@@ -462,12 +449,12 @@ class DefaultHtmlToOperations extends HtmlOperations {
       return <Operation>[
         Operation.insert(<String, Map<String, dynamic>>{
           'table': table,
-        })
+        }),
       ];
     }
 
-    final List<Operation> ops = <Operation>[];
-    for (final dom.Node node in element.nodes) {
+    final ops = <Operation>[];
+    for (final node in element.nodes) {
       if (node.nodeType == dom.Node.ELEMENT_NODE) {
         final element = node as dom.Element;
         if (element.localName == 'td') {
