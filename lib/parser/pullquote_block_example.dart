@@ -41,8 +41,9 @@ class PullquoteBlock extends CustomHtmlPart {
     Map<String, dynamic>? currentAttributes,
   }) {
     final delta = Delta();
-    final attributes = currentAttributes != null ? Map<String, dynamic>.from(currentAttributes) : null;
-    if (attributes == null) return [];
+    final attributes = currentAttributes != null
+        ? Map<String, dynamic>.from(currentAttributes)
+        : <String, dynamic>{};
 
     final author = element.attributes['data-author'];
     final style = element.attributes['data-style'];

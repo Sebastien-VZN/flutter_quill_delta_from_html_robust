@@ -24,7 +24,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
     final inlineAttributes = <String, dynamic>{};
     final blockAttributes = <String, dynamic>{};
     // Process the style attribute
-    if (attributes.containsKey('style') || attributes.containsKey('align') || attributes.containsKey('dir')) {
+    if (attributes.containsKey('style') ||
+        attributes.containsKey('align') ||
+        attributes.containsKey('dir')) {
       final style = attributes['style'] ?? '';
       final styles2 = attributes['align'];
       final styles3 = attributes['dir'];
@@ -44,7 +46,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
         onDetectLineheightCssVariable: onDetectLineheightCssVariable,
       );
       styleAttributes.addAll({...alignAttribute, ...dirAttribute});
-      if (styleAttributes.containsKey('align') || styleAttributes.containsKey('direction') || styleAttributes.containsKey('indent')) {
+      if (styleAttributes.containsKey('align') ||
+          styleAttributes.containsKey('direction') ||
+          styleAttributes.containsKey('indent')) {
         blockAttributes['align'] = styleAttributes['align'];
         blockAttributes['direction'] = styleAttributes['direction'];
         blockAttributes['indent'] = styleAttributes['indent'];
@@ -138,7 +142,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
     final attributes = <String, dynamic>{};
     final blockAttributes = <String, dynamic>{};
 
-    if (element.attributes.containsKey('style') || element.attributes.containsKey('align') || element.attributes.containsKey('dir')) {
+    if (element.attributes.containsKey('style') ||
+        element.attributes.containsKey('align') ||
+        element.attributes.containsKey('dir')) {
       final style = element.getSafeAttribute('style');
       final styles2 = element.getSafeAttribute('align');
       final styles3 = element.getSafeAttribute('dir');
@@ -158,7 +164,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
         onDetectLineheightCssVariable: onDetectLineheightCssVariable,
       );
       styleAttributes.addAll({...alignAttribute, ...dirAttribute});
-      if (styleAttributes.containsKey('align') || styleAttributes.containsKey('direction') || styleAttributes.containsKey('indent')) {
+      if (styleAttributes.containsKey('align') ||
+          styleAttributes.containsKey('direction') ||
+          styleAttributes.containsKey('indent')) {
         blockAttributes['align'] = styleAttributes['align'];
         blockAttributes['direction'] = styleAttributes['direction'];
         blockAttributes['indent'] = styleAttributes['indent'];
@@ -228,7 +236,8 @@ class DefaultHtmlToOperations extends HtmlOperations {
     final delta = Delta();
     final tagName = element.localName ?? 'ul';
     final attributes = <String, dynamic>{};
-    final items = element.children.where((child) => child.localName == 'li').toList();
+    final items =
+        element.children.where((child) => child.localName == 'li').toList();
 
     if (tagName == 'ul') {
       attributes['list'] = 'bullet';
@@ -256,7 +265,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
           dataChecked,
           onDetectLineheightCssVariable: onDetectLineheightCssVariable,
         );
-        final isCheckList = item.localName == 'li' && blockAttrs.isNotEmpty && blockAttrs.containsKey('list');
+        final isCheckList = item.localName == 'li' &&
+            blockAttrs.isNotEmpty &&
+            blockAttrs.containsKey('list');
         if (isCheckList) {
           attributes['list'] = blockAttrs['list'];
         }
@@ -307,10 +318,13 @@ class DefaultHtmlToOperations extends HtmlOperations {
       return [
         Operation.insert(
           {'image': src},
-          styles.isEmpty
+          attributes: styles.isEmpty
               ? null
               : {
-                  'style': attributes.entries.map((entry) => '${entry.key}:${entry.value}').toList().join(';'),
+                  'style': attributes.entries
+                      .map((entry) => '${entry.key}:${entry.value}')
+                      .toList()
+                      .join(';'),
                 },
         ),
       ];
@@ -321,8 +335,12 @@ class DefaultHtmlToOperations extends HtmlOperations {
   @override
   List<Operation> videoToOp(dom.Element element) {
     final src = element.getAttribute('src');
-    final sourceSrc = element.nodes.where((node) => node.nodeType == dom.Node.ELEMENT_NODE).firstOrNull?.attributes['src'];
-    if (src != null && src.isNotEmpty || sourceSrc != null && sourceSrc.isNotEmpty) {
+    final sourceSrc = element.nodes
+        .where((node) => node.nodeType == dom.Node.ELEMENT_NODE)
+        .firstOrNull
+        ?.attributes['src'];
+    if (src != null && src.isNotEmpty ||
+        sourceSrc != null && sourceSrc.isNotEmpty) {
       return [
         Operation.insert({'video': src ?? sourceSrc}),
       ];
@@ -387,7 +405,10 @@ class DefaultHtmlToOperations extends HtmlOperations {
       var rowIndex = 0;
       for (final node in (tBody ?? element).nodes) {
         final ops = <Operation>[];
-        final isHeaderRow = node is dom.Element && node.localName == 'tr' && node.children.isNotEmpty && node.children.firstOrNull?.localName == 'th';
+        final isHeaderRow = node is dom.Element &&
+            node.localName == 'tr' &&
+            node.children.isNotEmpty &&
+            node.children.firstOrNull?.localName == 'th';
         if (isHeaderRow) {
           var index = 0;
           final header = <String, dynamic>{};
@@ -419,7 +440,9 @@ class DefaultHtmlToOperations extends HtmlOperations {
           final nodeEl = node as dom.Element;
           if (nodeEl.localName == 'tr') {
             for (final cellNodes in nodeEl.children) {
-              final cellOps = cellNodes.localName == 'td' ? paragraphToOp(cellNodes) : divToOp(cellNodes);
+              final cellOps = cellNodes.localName == 'td'
+                  ? paragraphToOp(cellNodes)
+                  : divToOp(cellNodes);
               if (table['rows']['$rowIndex'] != null) {
                 table['rows']['$rowIndex'].addAll(
                   cellOps
