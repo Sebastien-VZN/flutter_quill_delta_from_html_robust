@@ -1,3 +1,35 @@
+## 1.6.1
+
+### Chores
+- Port and adapt CI/CD from `flutter_quill_robust`: unified `build_check.yml` workflow (format → analyze → test) on push/PR for `master` and `dev`.
+- Add `scripts/` toolkit: `format_check.dart` (CI gate, `dart format -l 150 --set-exit-if-changed`), `before_push.dart` (local pre-push guard mirroring CI), and shared `_lib/format_files.dart` (cross-platform batching for the Windows command-line length limit).
+- Add `.githooks/pre-push` (committed) to run `before_push.dart` before a push reaches GitHub; activate with `git config core.hooksPath .githooks`.
+- Add `.gitattributes` to normalize line endings (LF for Dart/YAML/MD, CRLF for `.bat`/`.cmd`, binary markers) and prevent cross-platform CRLF diffs in CI.
+- Reformat the codebase to 150 columns to match the Axomind formatting standard enforced by CI.
+- Bump `path` to a declared dependency (required by `scripts/_lib/format_files.dart`).
+
+### Tests
+- Add regression tests for the custom-block and pullquote fixes shipped in 1.6.0 (`test/robust_regression_test.dart`).
+
+### Docs
+- Rewrite README in the robust style.
+
+### Removed
+- Replace the legacy `checks.yml`, `pr-checks.yml`, and `tests.yml` workflows with the single `build_check.yml`.
+
+## 1.6.0
+
+### Breaking
+- Custom blocks now use a labeled `continue` so nested custom blocks are handled once and no longer leak as plain text.
+- `Operation.insert` attributes are now named (positional args removed); image attributes emit an explicit attributes map.
+
+### Feat
+- Support style attributes on inline elements (e.g. `<strong>`) via CSS styling (#30).
+
+### Fix
+- Restore `PullquoteBlock` attributes when no current attributes are set.
+- Redirect `dart_quill_delta` dependency to the robust fork (git URL) for maintenance continuity.
+
 ## 1.5.3
 
 * Feat: support to detect line height css variable and setting custom values
