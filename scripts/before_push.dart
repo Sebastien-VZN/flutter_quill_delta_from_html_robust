@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-
 import '_lib/format_files.dart';
 
 /// Local pre-push guard. Mirrors the CI pipeline so a push is blocked before
@@ -32,8 +30,9 @@ void main() async {
     );
   }
 
-  debugPrint('');
-  debugPrint('Checks completed.');
+  stdout
+    ..writeln()
+    ..writeln('Checks completed.');
 }
 
 Future<void> runCommand(
@@ -41,7 +40,7 @@ Future<void> runCommand(
   List<String> arguments, {
   String? workingDirectory,
 }) async {
-  debugPrint(
+  stdout.writeln(
     "Running '$executable ${arguments.join(' ')}' in directory "
     "'${workingDirectory ?? 'root'}'...",
   );
@@ -49,9 +48,10 @@ Future<void> runCommand(
     executable,
     arguments,
     workingDirectory: workingDirectory,
+    runInShell: true,
   );
-  debugPrint(result.stdout.toString());
-  debugPrint(result.stderr.toString());
+  stdout.write(result.stdout);
+  stderr.write(result.stderr);
   if (result.exitCode != 0) {
     stderr.writeln(
       "Command '$executable ${arguments.join(' ')}' failed with exit code "

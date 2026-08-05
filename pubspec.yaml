@@ -17,8 +17,6 @@ dependencies:
   path: ^1.9.0
 
 dev_dependencies:
-  flutter:
-    sdk: flutter
   flutter_test:
     sdk: flutter
   very_good_analysis: ^10.2.0
