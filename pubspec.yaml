@@ -9,7 +9,9 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  dart_quill_delta: ^10.8.3
+  dart_quill_delta:
+    git:
+      url: https://github.com/Sebastien-VZN/dart_quill_delta_robust.git
   html: ^0.15.5
 
 dev_dependencies:
