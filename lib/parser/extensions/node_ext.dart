@@ -28,31 +28,17 @@ extension NodeExt on Element {
 
   ///Ensure to detect span html tags
   bool get isSpan => localName == 'span';
-  bool get isBlock =>
-      isList || isHeader || isDivBlock || isBlockquote || isCodeBlock;
-  bool get isInline =>
-      isSpan ||
-      isParagraph ||
-      isLink ||
-      isStrong ||
-      isStrike ||
-      isItalic ||
-      isUnderline ||
-      isSubscript;
+  bool get isBlock => isList || isHeader || isDivBlock || isBlockquote || isCodeBlock;
+  bool get isInline => isSpan || isParagraph || isLink || isStrong || isStrike || isItalic || isUnderline || isSubscript;
 
   ///Ensure to detect h(1-6) html tags
-  bool get isHeader =>
-      localName != null && localName!.contains(RegExp('h[1-6]'));
+  bool get isHeader => localName != null && localName!.contains(RegExp('h[1-6]'));
 
   ///Ensure to detect img html tags
   bool get isImg => localName == 'img';
 
   ///Ensure to detect li,ul,ol,<input type=checkbox> html tags
-  bool get isList =>
-      localName == 'li' ||
-      localName == 'ul' ||
-      localName == 'ol' ||
-      querySelector('input[type="checkbox"]') != null;
+  bool get isList => localName == 'li' || localName == 'ul' || localName == 'ol' || querySelector('input[type="checkbox"]') != null;
 
   ///Ensure to detect video html tags
   bool get isVideo => localName == 'video';
@@ -70,8 +56,7 @@ extension NodeExt on Element {
   bool get isDivBlock => localName == 'div';
 
   ///Ensure to detect table html tags
-  bool get isTable =>
-      ['table', 'tbody', 'thead', 'tfoot', 'tr', 'td'].contains(localName);
+  bool get isTable => ['table', 'tbody', 'thead', 'tfoot', 'tr', 'td'].contains(localName);
 
   String getSafeAttribute(String attr) {
     return attributes[attr] ?? '';

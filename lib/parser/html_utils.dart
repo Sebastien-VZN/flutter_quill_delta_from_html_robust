@@ -14,8 +14,7 @@ import 'package:flutter_quill_delta_from_html/parser/typedef/typedefs.dart';
 /// Returns:
 /// `true` if [tag] is an inline element, `false` otherwise.
 bool isInline(String tag) {
-  return ["i", "em", "u", "ins", "s", "del", "b", "strong", "sub", "sup"]
-      .contains(tag);
+  return ["i", "em", "u", "ins", "s", "del", "b", "strong", "sub", "sup"].contains(tag);
 }
 
 /// Parses a CSS style attribute string into Delta attributes.

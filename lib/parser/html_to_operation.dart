@@ -72,10 +72,12 @@ abstract class HtmlOperations {
     if (element.isCodeBlock) ops.addAll(codeblockToOp(element));
     if (element.isDivBlock) ops.addAll(divToOp(element));
     if (element.isTable) {
-      ops.addAll(tableToOp(
-        element,
-        transformTableAsEmbed,
-      ),);
+      ops.addAll(
+        tableToOp(
+          element,
+          transformTableAsEmbed,
+        ),
+      );
     }
     return ops;
   }
@@ -114,16 +116,20 @@ abstract class HtmlOperations {
   List<Operation> divToOp(dom.Element element);
 
   /// Converts a table HTML element (`<table>`) to Delta operations.
-  List<Operation> tableToOp(dom.Element element,
-      [bool transformTableAsEmbed = false,]);
+  List<Operation> tableToOp(
+    dom.Element element, [
+    bool transformTableAsEmbed = false,
+  ]);
 
   /// Sets custom HTML parts to extend the conversion capabilities.
   ///
   /// Parameters:
   /// - [customBlocks]: List of custom HTML parts to add.
   /// - [overrideCurrentBlocks]: Flag to override existing custom blocks.
-  void setCustomBlocks(List<CustomHtmlPart> customBlocks,
-      {bool overrideCurrentBlocks = false,}) {
+  void setCustomBlocks(
+    List<CustomHtmlPart> customBlocks, {
+    bool overrideCurrentBlocks = false,
+  }) {
     if (this.customBlocks != null && !overrideCurrentBlocks) {
       this.customBlocks!.addAll(customBlocks);
       return;

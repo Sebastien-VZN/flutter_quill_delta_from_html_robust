@@ -3,8 +3,7 @@ import 'dart:collection';
 /// A map of color names to their hexadecimal representations.
 ///
 /// Source: https://www.w3.org/TR/css-color-4/#named-colors
-final Map<String, String> colorNameToHexMap =
-    UnmodifiableMapView<String, String>(
+final Map<String, String> colorNameToHexMap = UnmodifiableMapView<String, String>(
   <String, String>{
     "aliceblue": "#f0f8ff",
     "antiquewhite": "#faebd7",

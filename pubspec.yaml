@@ -14,8 +14,11 @@ dependencies:
     git:
       url: https://github.com/Sebastien-VZN/dart_quill_delta_robust.git
   html: ^0.15.5
+  path: ^1.9.0
 
 dev_dependencies:
+  flutter:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   very_good_analysis: ^10.2.0

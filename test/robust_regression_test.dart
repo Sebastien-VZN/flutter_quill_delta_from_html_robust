@@ -25,9 +25,7 @@ void main() {
 
       // The raw text of the pullquote must NOT appear as a separate plain insert.
       final leakedText = ops.any(
-        (op) =>
-            op.data is String &&
-            (op.data! as String).trim() == 'Custom block content',
+        (op) => op.data is String && (op.data! as String).trim() == 'Custom block content',
       );
       expect(leakedText, isFalse, reason: 'custom block leaked as plain text (double insert)');
     });

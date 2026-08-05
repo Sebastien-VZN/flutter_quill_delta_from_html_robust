@@ -1,7 +1,6 @@
 /// constant common line-height multiplier
 const normalLineHeightMultiplier = 1.2;
-final RegExp _cssVariables =
-    RegExp(r'var\(\s*--([a-zA-Z0-9_-]+)\s*\)|^var\(.+');
+final RegExp _cssVariables = RegExp(r'var\(\s*--([a-zA-Z0-9_-]+)\s*\)|^var\(.+');
 
 /// Parses a CSS `line-height` value to a pixel value based on the specified [fontSize] and optional [rootFontSize].
 ///
@@ -40,8 +39,7 @@ double parseLineHeight(
   if (lineHeight.endsWith('px')) {
     parsedValue = double.parse(lineHeight.replaceAll('px', ''));
   } else if (lineHeight.endsWith('%')) {
-    parsedValue =
-        fontSize * (double.parse(lineHeight.replaceAll('%', '')) / 100);
+    parsedValue = fontSize * (double.parse(lineHeight.replaceAll('%', '')) / 100);
   } else if (lineHeight.endsWith('rem')) {
     parsedValue = rootFontSize * double.parse(lineHeight.replaceAll('rem', ''));
   } else if (lineHeight.endsWith('em')) {

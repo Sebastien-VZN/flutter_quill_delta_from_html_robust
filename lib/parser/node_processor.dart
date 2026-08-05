@@ -112,9 +112,10 @@ void processNode(
 
       // Handle <br> tags (line breaks)
       if (node.isBreakLine) {
-        newAttributes..remove('align')
-        ..remove('direction')
-        ..remove('indent');
+        newAttributes
+          ..remove('align')
+          ..remove('direction')
+          ..remove('indent');
         delta.insert('\n');
       }
     }

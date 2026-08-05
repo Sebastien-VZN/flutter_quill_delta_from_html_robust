@@ -20,8 +20,7 @@ class HtmlToDelta {
     this.replaceNormalNewLinesToBr = false,
     this.onDetectLineheightCssVariable,
   }) {
-    htmlToOp = htmlToOperations ??
-        DefaultHtmlToOperations(onDetectLineheightCssVariable);
+    htmlToOp = htmlToOperations ?? DefaultHtmlToOperations(onDetectLineheightCssVariable);
     //this part ensure to set the customBlocks passed at the constructor
     htmlToOp.setCustomBlocks(customBlocks ?? []);
   }
@@ -113,25 +112,20 @@ class HtmlToDelta {
         .removeAllNewLines;
     final delta = Delta();
     final $document = dparser.parse(
-      replaceNormalNewLinesToBr
-          ? parsedText.transformNewLinesToBrTag
-          : parsedText,
+      replaceNormalNewLinesToBr ? parsedText.transformNewLinesToBrTag : parsedText,
     );
     final $body = $document.body;
     final $html = $document.documentElement;
 
     // Determine nodes to process: <body>, <html>, or document nodes if neither is present
-    final List<dom.Node> nodesToProcess =
-        $body?.nodes ?? $html?.nodes ?? $document.nodes;
+    final List<dom.Node> nodesToProcess = $body?.nodes ?? $html?.nodes ?? $document.nodes;
 
     nodeLoop:
     for (var i = 0; i < nodesToProcess.length; i++) {
       final node = nodesToProcess[i];
       //first just verify if the customBlocks aren't empty and then store on them to
       //validate if one of them make match with the current Node
-      if (customBlocks != null &&
-          customBlocks!.isNotEmpty &&
-          node is dom.Element) {
+      if (customBlocks != null && customBlocks!.isNotEmpty && node is dom.Element) {
         for (final customBlock in customBlocks!) {
           if (customBlock.matches(node)) {
             final operations = customBlock.convert(node);
@@ -147,9 +141,7 @@ class HtmlToDelta {
       var nextIsBlock = nextNode is dom.Element && nextNode.isBlock;
       if (isBlockValidator != null) {
         nextIsBlock = isBlockValidator?.call(
-              nextNode is dom.Element
-                  ? nextNode.localName ?? 'no-localname'
-                  : 'text-node',
+              nextNode is dom.Element ? nextNode.localName ?? 'no-localname' : 'text-node',
             ) ??
             false;
       }
@@ -178,9 +170,7 @@ class HtmlToDelta {
       final lastOpdata = delta.last;
       final lastDataIsNotNewLine = lastOpdata.data.toString() != '\n';
       final hasAttributes = lastOpdata.attributes != null;
-      if (lastDataIsNotNewLine && hasAttributes ||
-          lastDataIsNotNewLine ||
-          !lastDataIsNotNewLine && hasAttributes) {
+      if (lastDataIsNotNewLine && hasAttributes || lastDataIsNotNewLine || !lastDataIsNotNewLine && hasAttributes) {
         delta.insert('\n');
       }
     }
@@ -213,15 +203,12 @@ class HtmlToDelta {
     final $html = $document.documentElement;
 
     // Determine nodes to process: <body>, <html>, or document nodes if neither is present
-    final List<dom.Node> nodesToProcess =
-        $body?.nodes ?? $html?.nodes ?? $document.nodes;
+    final List<dom.Node> nodesToProcess = $body?.nodes ?? $html?.nodes ?? $document.nodes;
 
     nodeLoop:
     for (var i = 0; i < nodesToProcess.length; i++) {
       final node = nodesToProcess[i];
-      if (customBlocks != null &&
-          customBlocks!.isNotEmpty &&
-          node is dom.Element) {
+      if (customBlocks != null && customBlocks!.isNotEmpty && node is dom.Element) {
         for (final customBlock in customBlocks!) {
           if (customBlock.matches(node)) {
             final operations = customBlock.convert(node);
@@ -233,13 +220,10 @@ class HtmlToDelta {
         }
       }
       final nextNode = nodesToProcess.elementAtOrNull(i + 1);
-      var nextIsBlock = !(nextNode == null) &&
-          (!(nextNode is! dom.Element) && nextNode.isBlock);
+      var nextIsBlock = !(nextNode == null) && (!(nextNode is! dom.Element) && nextNode.isBlock);
       if (isBlockValidator != null) {
         nextIsBlock = isBlockValidator?.call(
-              nextNode is dom.Element
-                  ? nextNode.localName ?? 'no-localname'
-                  : 'text-node',
+              nextNode is dom.Element ? nextNode.localName ?? 'no-localname' : 'text-node',
             ) ??
             false;
       }
@@ -265,9 +249,7 @@ class HtmlToDelta {
     final lastOpdata = delta.last;
     final lastDataIsNotNewLine = lastOpdata.data.toString() != '\n';
     final hasAttributes = lastOpdata.attributes != null;
-    if (lastDataIsNotNewLine && hasAttributes ||
-        lastDataIsNotNewLine ||
-        !lastDataIsNotNewLine && hasAttributes) {
+    if (lastDataIsNotNewLine && hasAttributes || lastDataIsNotNewLine || !lastDataIsNotNewLine && hasAttributes) {
       delta.insert('\n');
     }
     return delta;
