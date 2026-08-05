@@ -1,8 +1,21 @@
-# Flutter Quill Delta from HTML
+# 🪶 flutter_quill_delta_from_html_robust
 
-This is a **Dart** package that converts **HTML** input into Quill **Delta** format, which is used in the [Quill Js](https://quilljs.com/) package.
+A **hardened, production-ready fork** of [`flutter_quill_delta_from_html`](https://github.com/CatHood0/flutter_quill_delta_from_html) for the [`flutter_quill`](https://pub.dev/packages/flutter_quill) ecosystem.
+
+A **Dart** package that converts **HTML** input into Quill **Delta** format, which is used in the [Quill Js](https://quilljs.com/) package.
 
 **This package** supports the conversion of a wide range of **HTML** tags and attributes into their corresponding **Delta** operations, ensuring that your **HTML** content is accurately represented in the **Quill editor**.
+
+> **⚠️ Breaking change**: The optional `attributes` parameter on `Delta.insert` / `Delta.retain` / `Operation.insert` / `Operation.retain` is now **named**. See the [dart_quill_delta_robust README](https://github.com/Sebastien-VZN/dart_quill_delta_robust) for details.
+
+## Why this fork?
+
+This fork is part of the **robust** family, sharing the same rigor across all projects:
+
+- **API hardening**: depends on [`dart_quill_delta_robust`](https://github.com/Sebastien-VZN/dart_quill_delta_robust) which uses an explicit **named** `attributes:` signature.
+- **Strict analysis**: enforced with [`very_good_analysis`](https://pub.dev/packages/very_good_analysis) plus Axomind customization (`strict-casts`, `strict-inference`, `strict-raw-types`).
+- **Bug fixes**: labeled `continue` in custom-block loops (fixes double-insert on matched blocks), `pullquote` returns attributes instead of an empty list, named `Operation.insert` for images.
+- **Fork identity**: repository, homepage and issue tracker point to this fork; `publish_to: none`.
 
 ## Supported tags
 
@@ -64,17 +77,19 @@ Add the dependency to your pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_quill_delta_from_html: <lastest_version>
+  flutter_quill_delta_from_html:
+    git:
+      url: https://github.com/Sebastien-VZN/flutter_quill_delta_from_html_robust.git
 ```
 
-Then, import the package and use it in your Flutter application:
+Then run `flutter pub get` and import the package:
 
 ```dart
 import 'package:flutter_quill_delta_from_html/flutter_quill_delta_from_html.dart';
 
 void main() {
-  String htmlContent = '<p style="line-height: 2.0">Hello, <b>world</b>!</p>';
-  var delta = HtmlToDelta().convert(htmlContent, transformTableAsEmbed: false);
+  final htmlContent = '<p style="line-height: 2.0">Hello, <b>world</b>!</p>';
+  final delta = HtmlToDelta().convert(htmlContent, transformTableAsEmbed: false);
 /*
    { "insert": "hello, " },
    { "insert": "world", "attributes": {"bold": true} },
@@ -120,16 +135,16 @@ class PullquoteBlock extends CustomHtmlPart {
 
     // Apply custom attributes to the Delta operations
     if (author != null) {
-      delta.insert('Pullquote: "${element.text}" by $author', attributes);
+      delta.insert('Pullquote: "${element.text}" by $author', attributes: attributes);
     } else {
-      delta.insert('Pullquote: "${element.text}"', attributes);
+      delta.insert('Pullquote: "${element.text}"', attributes: attributes);
     }
 
     if (style != null && style.toLowerCase() == 'italic') {
       attributes['italic'] = true;
     }
 
-    delta.insert('\n', attributes);
+    delta.insert('\n', attributes: attributes);
 
     return delta.toList();
   }
@@ -202,6 +217,10 @@ abstract class HtmlOperations {
 
 ## Contributions
 
-If you find a bug or want to add a new feature, please open an issue or submit a pull request on the [GitHub repository](https://github.com/CatHood0/flutter_quill_delta_from_html).
+If you find a bug or want to add a new feature, please open an issue or submit a pull request on the [GitHub repository](https://github.com/Sebastien-VZN/flutter_quill_delta_from_html_robust).
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/CatHood0/flutter_quill_delta_from_html/blob/Main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Sebastien-VZN/flutter_quill_delta_from_html_robust/blob/master/LICENSE) file for details.
+
+---
+
+[Français](./README_FR.md)
